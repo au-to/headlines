@@ -1,15 +1,12 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
+  <div>
+    用户
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
-  components: {
-
-  }
+  name: 'User'
 }
 </script>
 
