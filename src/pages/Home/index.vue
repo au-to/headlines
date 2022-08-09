@@ -21,8 +21,7 @@
       <van-tabs v-model="channelId"
                 animated
                 sticky
-                offset-top="1.2226rem"
-                style="height: 1000px">
+                offset-top="1.2226rem">
         <van-tab v-for="item in channelList"
                  :key="item.id"
                  :name="item.id"
@@ -30,6 +29,17 @@
           <ArticleList :channelId="channelId"></ArticleList>
         </van-tab>
       </van-tabs>
+      <!-- 加号 -->
+      <van-icon name="plus"
+                @click="showPopup"
+                class="add"
+                size="0.37333334rem" />
+      <!-- 点击加号，显示弹出层 -->
+      <van-popup class="popUp"
+                 v-model="show"
+                 closeable>
+        <ChannelEdit></ChannelEdit>
+      </van-popup>
     </div>
   </div>
 </template>
@@ -37,15 +47,18 @@
 <script>
 import { reqGetUserChannels } from '@/api'
 import ArticleList from './components/ArticleList.vue'
+import ChannelEdit from './components/ChannelEdit.vue'
 export default {
   name: 'Home',
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   data () {
     return {
       channelId: 0, // 频道id
-      channelList: [] // 用户频道
+      channelList: [], // 用户频道
+      show: false
     }
   },
   created () {
@@ -57,6 +70,10 @@ export default {
     async getChannelList () {
       const res = await reqGetUserChannels()
       this.channelList = res.data.data.channels
+    },
+    // 点击加号，展示弹出层
+    showPopup () {
+      this.show = true
     }
   }
 }
@@ -69,5 +86,15 @@ export default {
 }
 .main {
   padding-top: 46px;
+  .add {
+    position: fixed;
+    top: 62px;
+    right: 8px;
+    z-index: 100;
+  }
+  .popUp {
+    width: 100vw;
+    height: 100vh;
+  }
 }
 </style>

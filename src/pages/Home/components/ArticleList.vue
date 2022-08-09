@@ -1,16 +1,21 @@
 <template>
   <div>
-    <!-- 文章列表组件 -->
-    <van-list v-model="loading"
-              :finished="finished"
-              finished-text="没有更多了"
-              @load="onLoad"
-              offset="50"
-              :immediate-check="false">
-      <ArticleItem v-for="item in articleList"
-                   :key="item.art_id"
-                   :obj="item"></ArticleItem>
-    </van-list>
+    <!-- 上拉刷新 -->
+    <van-pull-refresh v-model="isLoading"
+                      @refresh="onRefresh">
+      <!-- 文章列表组件 -->
+      <van-list v-model="loading"
+                :finished="finished"
+                finished-text="没有更多了"
+                @load="onLoad"
+                offset="50"
+                :immediate-check="false">
+        <ArticleItem v-for="item in articleList"
+                     :key="item.art_id"
+                     :obj="item"></ArticleItem>
+      </van-list>
+    </van-pull-refresh>
+
   </div>
 </template>
 
@@ -24,7 +29,8 @@ export default {
       articleList: [], // 文章列表
       loading: false,
       finished: false,
-      theTime: new Date().getTime() // 请求前一页历史数据的时间戳
+      theTime: new Date().getTime(), // 请求前一页历史数据的时间戳
+      isLoading: false
     }
   },
   components: {
@@ -54,8 +60,19 @@ export default {
     onLoad () {
       if (this.articleList.length === 0) {
         this.loading = false
+        return
       }
       this.changeChanel()
+    },
+    // 下拉刷新
+    async onRefresh () {
+      try {
+        this.articleList = []
+        this.changeChanel()
+        this.isLoading = false
+      } catch (error) {
+        alert(error.message)
+      }
     }
   }
 }

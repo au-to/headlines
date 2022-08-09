@@ -33,10 +33,19 @@
               <span>{{obj.pubdate}}</span>
             </div>
             <!-- 反馈按钮 -->
-            <van-icon name="cross" />
+            <van-icon name="cross"
+                      @click="show = true" />
           </div>
         </template>
       </van-cell>
+
+      <van-action-sheet v-model="show"
+                        :actions="actions"
+                        @close="onClose"
+                        @cancel="onCancel"
+                        @select="onSelect"
+                        :cancel-text="text"
+                        get-container="body" />
     </template>
   </div>
 </template>
@@ -44,8 +53,73 @@
 <script>
 export default {
   name: 'ArticleItem',
+  data () {
+    return {
+      show: false,
+      text: '取消',
+      actions: [{ name: '不感兴趣' }, { name: '反馈垃圾内容' }],
+      secondActions: [{
+        value: 0,
+        name: '其它问题'
+      },
+      {
+        value: 1,
+        name: '标题夸张'
+      },
+      {
+        value: 2,
+        name: '低俗色情'
+      },
+      {
+        value: 3,
+        name: '错别字多'
+      },
+      {
+        value: 4,
+        name: '旧闻重复'
+      },
+      {
+        value: 6,
+        name: '内容不实'
+      },
+      {
+        value: 8,
+        name: '侵权'
+      },
+      {
+        value: 5,
+        name: '广告软文'
+      },
+      {
+        value: 7,
+        name: '涉嫌违法犯罪'
+      }]
+    }
+  },
   props: {
     obj: Object
+  },
+  methods: {
+    // 点击反馈按钮
+    onSelect (action, obj) {
+      if (action.name === '反馈垃圾内容') {
+        this.actions = this.secondActions
+        this.text = '返回'
+      }
+    },
+    // 点击取消按钮
+    onCancel () {
+      if (this.text === '返回') {
+        this.actions = [{ name: '不感兴趣' }, { name: '反馈垃圾内容' }]
+        this.text = '取消'
+        this.show = true
+      }
+    },
+    // 关闭面板时触发
+    onClose () {
+      this.actions = [{ name: '不感兴趣' }, { name: '反馈垃圾内容' }]
+      this.text = '取消'
+    }
   }
 }
 </script>
