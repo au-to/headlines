@@ -38,14 +38,15 @@
       <van-popup class="popUp"
                  v-model="show"
                  closeable>
-        <ChannelEdit></ChannelEdit>
+        <ChannelEdit :userChannels="channelList"
+                     @addChannelEv="addChannel"></ChannelEdit>
       </van-popup>
     </div>
   </div>
 </template>
 
 <script>
-import { reqGetUserChannels } from '@/api'
+import { reqGetUserChannels, reqUpdateChannels } from '@/api'
 import ArticleList from './components/ArticleList.vue'
 import ChannelEdit from './components/ChannelEdit.vue'
 export default {
@@ -66,7 +67,7 @@ export default {
     this.getChannelList()
   },
   methods: {
-    // 获取频道列表
+    // 获取用户的频道列表
     async getChannelList () {
       const res = await reqGetUserChannels()
       this.channelList = res.data.data.channels
@@ -74,6 +75,22 @@ export default {
     // 点击加号，展示弹出层
     showPopup () {
       this.show = true
+    },
+    // 子组件中点击添加频道的自定义事件回调
+    async addChannel (channelObj) {
+      this.channelList.push(channelObj)
+      // 更新用户频道
+      // 先过滤掉id为0的推荐频道
+      const arr = this.channelList.filter((obj) => {
+        return obj.id !== 0
+      })
+      const newList = arr.map((item, index) => {
+        const newObj = { ...item }
+        newObj.seq = index + 1
+        delete newObj.name
+        return newObj
+      })
+      await reqUpdateChannels({ channels: newList })
     }
   }
 }

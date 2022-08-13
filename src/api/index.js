@@ -11,3 +11,7 @@ export const reqGetArticleList = ({ channel_id, timestamp }) => requests({ url: 
 export const reqUnintresting = (artId) => requests({ url: '/v1_0/article/dislikes', headers: { Authorization: `Bearer ${getToken()}` }, data: { artId }, method: 'post' })
 // 举报文章
 export const reqReportArticle = ({ artId, type, remark }) => requests({ url: '/v1_0/article/reports', headers: { Authorization: `Bearer ${getToken()}` }, data: { artId, type, remark }, method: 'post' })
+// 获取所有的频道
+export const reqGetAllChannels = () => requests({ url: '/v1_0/channels', method: 'get' })
+// 更新用户频道
+export const reqUpdateChannels = ({ channels }) => requests({ url: '/v1_0/user/channels', method: 'put', data: { channels: channels } })

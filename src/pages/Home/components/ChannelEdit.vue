@@ -14,19 +14,22 @@
       <div class="channel-title">
         <span>我的频道
           <span class="small-title">
-            点击进入频道
+            {{isEdit==true?'点击删除频道':'点击进入频道'}}
           </span>
         </span>
-        <span>编辑</span>
+        <span @click="isEdit=!isEdit">{{isEdit==true?'完成':'编辑'}}</span>
       </div>
       <!-- 我的频道列表 -->
       <van-row type="flex">
-        <van-col span="6">
+        <van-col span="6"
+                 v-for="(obj,index) in userChannels"
+                 :key="obj.id">
           <div class="channel-item van-hairline--surround">
-            名字
+            {{obj.name}}
             <!-- 删除的徽标 -->
             <van-badge color="transparent"
-                       class="cross-badge">
+                       class="cross-badge"
+                       v-show="isEdit && index!==0">
               <template #content>
                 <van-icon name="cross"
                           class="badge-icon"
@@ -46,8 +49,11 @@
       </div>
       <!-- 更多频道列表 -->
       <van-row type="flex">
-        <van-col span="6">
-          <div class="channel-item van-hairline--surround">名字</div>
+        <van-col span="6"
+                 @click="addChannel(obj)"
+                 v-for="obj in moreChannels"
+                 :key="obj.id">
+          <div class="channel-item van-hairline--surround">{{obj.name}}</div>
         </van-col>
       </van-row>
     </div>
@@ -55,8 +61,47 @@
 </template>
 
 <script>
+import { reqGetAllChannels } from '@/api'
 export default {
-  name: 'ChannelEdit'
+  name: 'ChannelEdit',
+  data () {
+    return {
+      allChannels: [], // 所有频道
+      isEdit: false // 编辑状态切换
+    }
+  },
+  props: {
+    // 用户的频道
+    userChannels: {
+      type: Array,
+      require: true
+    }
+  },
+  created () {
+    this.getAllChanels()
+  },
+  computed: {
+    // 更多频道
+    moreChannels () {
+      return this.allChannels.filter(obj => {
+        const index = this.userChannels.findIndex(obj2 => obj2.id === obj.id)
+        if (index === -1) return true
+      })
+    }
+  },
+  methods: {
+    // 获取所有的频道
+    async getAllChanels () {
+      const res = await reqGetAllChannels()
+      this.allChannels = res.data.data.channels
+    },
+    // 点击，把更多频道添加进我的频道
+    addChannel (channelObj) {
+      if (this.isEdit === true) {
+        this.$emit('addChannelEv', channelObj)
+      }
+    }
+  }
 }
 </script>
 
