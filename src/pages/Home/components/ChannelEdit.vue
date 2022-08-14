@@ -4,8 +4,8 @@
     <van-nav-bar title="频道管理">
       <template #right>
         <van-icon name="cross"
-                  size="0.37333334rem"
-                  color="white" />
+                  @click="closePopup"
+                  size=".37333rem" />
       </template>
     </van-nav-bar>
 
@@ -23,7 +23,8 @@
       <van-row type="flex">
         <van-col span="6"
                  v-for="(obj,index) in userChannels"
-                 :key="obj.id">
+                 :key="obj.id"
+                 @click="removeChannel(obj)">
           <div class="channel-item van-hairline--surround">
             {{obj.name}}
             <!-- 删除的徽标 -->
@@ -100,6 +101,25 @@ export default {
       if (this.isEdit === true) {
         this.$emit('addChannelEv', channelObj)
       }
+    },
+    // 删除用户频道
+    removeChannel (obj) {
+      if (this.isEdit === true) {
+        // 删除频道
+        if (obj.id !== 0) {
+          this.$emit('removeChannelEv', obj)
+        }
+      } else {
+        // 点击进入频道
+        this.$emit('intoChannelEv', obj)
+        // 关闭弹窗
+        this.$emit('closePopupEv')
+      }
+    },
+    // 关闭弹出层
+    closePopup () {
+      this.isEdit = false
+      this.$emit('closePopupEv')
     }
   }
 }

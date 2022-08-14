@@ -12,7 +12,8 @@
         <template #right>
           <van-icon name="search"
                     color="#fff"
-                    size="0.48rem" />
+                    size="0.48rem"
+                    @click="goSearch" />
         </template>
       </van-nav-bar>
     </div>
@@ -39,14 +40,17 @@
                  v-model="show"
                  closeable>
         <ChannelEdit :userChannels="channelList"
-                     @addChannelEv="addChannel"></ChannelEdit>
+                     @addChannelEv="addChannel"
+                     @intoChannelEv="intoChannel"
+                     @removeChannelEv="removeChannel"
+                     @closePopupEv="closePopup"></ChannelEdit>
       </van-popup>
     </div>
   </div>
 </template>
 
 <script>
-import { reqGetUserChannels, reqUpdateChannels } from '@/api'
+import { reqGetUserChannels, reqUpdateChannels, reqRemoveChannels } from '@/api'
 import ArticleList from './components/ArticleList.vue'
 import ChannelEdit from './components/ChannelEdit.vue'
 export default {
@@ -91,6 +95,26 @@ export default {
         return newObj
       })
       await reqUpdateChannels({ channels: newList })
+    },
+    // 删除用户频道
+    async removeChannel (obj) {
+      // 首先把它从用户列表中移除
+      const index = this.channelList.findIndex((item) => obj.id === item.id)
+      this.channelList.splice(index, 1)
+      // 发请求更新用户频道
+      await reqRemoveChannels(obj.id)
+    },
+    // 关闭弹出层
+    closePopup () {
+      this.show = false
+    },
+    // 进入频道
+    intoChannel (obj) {
+      this.channelId = obj.id
+    },
+    // 点击搜索
+    goSearch () {
+      this.$router.push('/search')
     }
   }
 }

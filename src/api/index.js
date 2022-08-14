@@ -15,3 +15,7 @@ export const reqReportArticle = ({ artId, type, remark }) => requests({ url: '/v
 export const reqGetAllChannels = () => requests({ url: '/v1_0/channels', method: 'get' })
 // 更新用户频道
 export const reqUpdateChannels = ({ channels }) => requests({ url: '/v1_0/user/channels', method: 'put', data: { channels: channels } })
+// 删除用户频道
+export const reqRemoveChannels = (target) => requests({ url: `/v1_0/user/channels/${target}`, method: 'delete' })
+// 搜索框联想词
+export const reqSuggestions = (str) => requests({ url: '/v1_0/suggestion', method: 'get', params: { q: str } })

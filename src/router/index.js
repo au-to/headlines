@@ -26,10 +26,17 @@ const routes = [
       }
     ]
   },
-
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/search',
+    component: () => import('@/pages/Search')
+  },
+  {
+    path: '/searchresult',
+    component: () => import('@/pages/SearchResult')
   }
 ]
 
