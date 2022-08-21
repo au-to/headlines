@@ -11,6 +11,7 @@
                 offset="50"
                 :immediate-check="false">
         <ArticleItem v-for="item in articleList"
+                     @click.native="goArticleItem(item.art_id)"
                      :key="item.art_id"
                      :obj="item"></ArticleItem>
       </van-list>
@@ -21,7 +22,7 @@
 
 <script>
 import { reqGetArticleList } from '@/api'
-import ArticleItem from './ArticleItem.vue'
+import ArticleItem from '@/components/ArticleItem.vue'
 export default {
   name: 'ArticleList',
   data () {
@@ -73,6 +74,10 @@ export default {
       } catch (error) {
         alert(error.message)
       }
+    },
+    // 路由跳转文章详情
+    goArticleItem (id) {
+      this.$router.push(`/article-detail?art_id=${id}`)
     }
   }
 }

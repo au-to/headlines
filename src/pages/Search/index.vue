@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <!-- 搜索历史记录 -->
+    <!-- 搜索历史 -->
     <div class="search-history"
          v-else>
       <!-- 标题 -->
@@ -37,6 +37,7 @@
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #right-icon>
           <van-icon name="delete"
+                    @click="removeHistory"
                     class="search-icon" />
         </template>
       </van-cell>
@@ -61,8 +62,12 @@ export default {
       keywords: '', // 搜索关键词
       timer: null, // 防抖用的定时器
       suggestList: [], // 建议关键字列表
-      history: ['API', 'java', 'css', '前端', '后台接口', 'python'] // 搜索历史
+      history: [] // 搜索历史
     }
+  },
+  mounted () {
+    const arr = JSON.parse(localStorage.getItem('his'))
+    this.history = [...new Set(arr)] || []
   },
   methods: {
     // 联想词
@@ -85,13 +90,21 @@ export default {
     },
     // 搜索框输入跳转
     searchFn () {
-      const params = this.keywords
+      const str = this.keywords
+      // 将关键字存入搜索记录
+      this.history.push(str)
+      // 本地存储搜索历史列表
+      localStorage.setItem('his', JSON.stringify(this.history))
       this.$router.push({
-        path: `/searchresult/${params}`
+        path: `/searchresult/${str}`
       })
     },
     // 点击联想词跳转
     goResult (str) {
+      // 将关键字存入搜索记录
+      this.history.push(str)
+      // 本地存储搜索历史列表
+      localStorage.setItem('his', JSON.stringify(this.history))
       this.$router.push({
         path: `/searchresult/${str}`
       })
@@ -101,6 +114,11 @@ export default {
       this.$router.push({
         path: `/searchresult/${str}`
       })
+    },
+    // 清空历史记录
+    removeHistory () {
+      this.history = []
+      localStorage.removeItem('his')
     }
   }
 }

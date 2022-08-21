@@ -35,8 +35,12 @@ const routes = [
     component: () => import('@/pages/Search')
   },
   {
-    path: '/searchresult',
+    path: '/searchresult/:kw',
     component: () => import('@/pages/SearchResult')
+  },
+  {
+    path: '/article-detail',
+    component: () => import('@/pages/ArticleDetail')
   }
 ]
 

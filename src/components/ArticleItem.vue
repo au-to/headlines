@@ -34,6 +34,8 @@
             </div>
             <!-- 反馈按钮 -->
             <van-icon name="cross"
+                      v-if="isShow"
+                      @click.stop
                       @click="show = true" />
           </div>
         </template>
@@ -97,11 +99,15 @@ export default {
     }
   },
   props: {
-    obj: Object
+    obj: Object,
+    isShow: {
+      type: Boolean,
+      default: true
+    }
   },
   methods: {
     // 点击反馈按钮
-    onSelect (action, obj) {
+    onSelect (action) {
       if (action.name === '反馈垃圾内容') {
         this.actions = this.secondActions
         this.text = '返回'

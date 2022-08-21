@@ -19,3 +19,30 @@ export const reqUpdateChannels = ({ channels }) => requests({ url: '/v1_0/user/c
 export const reqRemoveChannels = (target) => requests({ url: `/v1_0/user/channels/${target}`, method: 'delete' })
 // 搜索框联想词
 export const reqSuggestions = (str) => requests({ url: '/v1_0/suggestion', method: 'get', params: { q: str } })
+// 获取搜索结果
+export const reqGetSearchResult = ({ q }) => requests({ url: '/v1_0/search', method: 'get', params: { q } })
+// 获取文章详情
+export const reqGetArticleInfo = (id) => requests({ url: `/v1_0/articles/${id}`, method: 'get' })
+// 关注作者
+export const reqFocus = (auid) => requests({ url: '/v1_0/user/followings', method: 'post', data: { target: auid } })
+// 取消关注
+export const reqUnFocus = (auid) => requests({ url: `/v1_0/user/followings/${auid}`, method: 'delete' })
+// 点赞文章
+export const reqAddLike = (artid) => requests({ url: '/v1_0/article/likings', method: 'post', data: { target: artid } })
+// 取消点赞
+export const reqDisLike = (target) => requests({ url: `/v1_0/article/likings/${target}`, method: 'delete' })
+// 获取评论信息
+export const reqGetCommentsInfo = ({ id, offset = null, limit = 10 }) => requests({
+  url: '/v1_0/comments',
+  method: 'get',
+  params: {
+    type: 'a',
+    source: id,
+    offset,
+    limit
+  }
+})
+// 点赞评论
+export const reqLikeArticle = (id) => requests({ url: '/v1_0/comment/likings', method: 'post', data: { target: id } })
+// 取消点赞
+export const reqDisLikeArticle = (target) => requests({ url: `/v1_0/comment/likings/${target}`, method: 'delete' })
