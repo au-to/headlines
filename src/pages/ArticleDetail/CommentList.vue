@@ -1,51 +1,62 @@
 <template>
   <div>
     <!-- 评论列表 -->
-    <div class="cmt-list">
+    <div class="cmt-list"
+         id="cmt-list">
       <!-- 评论的 Item 项 -->
-      <div class="cmt-item"
-           v-for="obj in comments"
-           :key="obj.com_id">
-        <!-- 头部区域 -->
-        <div class="cmt-header">
-          <!-- 头部左侧 -->
-          <div class="cmt-header-left">
-            <img :src="obj.aut_photo"
-                 class="avatar">
-            <span class="uname">{{obj.aut_name}}</span>
+      <van-list v-model="loading"
+                :finished="finished"
+                finished-text="没有更多了"
+                @load="loadFn"
+                offset="50"
+                :immediate-check="false">
+        <div class="cmt-item"
+             v-for="(obj,index) in comments"
+             :key="index">
+          <!-- 头部区域 -->
+          <div class="cmt-header">
+            <!-- 头部左侧 -->
+            <div class="cmt-header-left">
+              <img :src="obj.aut_photo"
+                   class="avatar">
+              <span class="uname">{{obj.aut_name}}</span>
+            </div>
+            <!-- 头部右侧 -->
+            <div class="cmt-header-right">
+              <van-icon name="like"
+                        v-if="obj.is_liking===true"
+                        @click="likeFn(true,obj)"
+                        size="16"
+                        color="red" />
+              <van-icon name="like-o"
+                        v-else
+                        @click="likeFn(false,obj)"
+                        size="16"
+                        color="gray" />
+            </div>
           </div>
-          <!-- 头部右侧 -->
-          <div class="cmt-header-right">
-            <van-icon name="like"
-                      v-if="obj.is_liking===true"
-                      @click="likeFn(true,obj)"
-                      size="16"
-                      color="red" />
-            <van-icon name="like-o"
-                      v-else
-                      @click="likeFn(false,obj)"
-                      size="16"
-                      color="gray" />
+          <!-- 主体区域 -->
+          <div class="cmt-body">
+            {{obj.content}}
           </div>
+          <!-- 尾部区域 -->
+          <div class="cmt-footer">3天前</div>
         </div>
-        <!-- 主体区域 -->
-        <div class="cmt-body">
-          {{obj.content}}
-        </div>
-        <!-- 尾部区域 -->
-        <div class="cmt-footer">3天前</div>
-      </div>
+      </van-list>
     </div>
 
     <!-- 底部添加评论区域 - 1 -->
     <div class="add-cmt-box van-hairline--top"
-         v-if="isShow=false">
+         v-if="isShow===false">
       <van-icon name="arrow-left"
                 size="0.48rem"
                 @click="$router.back()" />
-      <div class="ipt-cmt-div">发表评论</div>
+      <div class="ipt-cmt-div"
+           @click="isShow=true">发表评论</div>
       <div class="icon-box">
-        <van-badge>
+        <van-badge :content="totalCount"
+                   max="9">
+          <!-- 显示评论条数 -->
           <van-icon name="comment-o"
                     size="0.53333334rem" />
         </van-badge>
@@ -59,31 +70,50 @@
     <!-- 底部添加评论区域 - 2 -->
     <div class="cmt-box van-hairline--top"
          v-else>
-      <textarea placeholder="友善评论、理性发言、阳光心灵"></textarea>
+      <textarea v-model="content"
+                placeholder="友善评论、理性发言、阳光心灵"
+                @blur="blurFn"></textarea>
       <van-button type="default"
-                  disabled>发布</van-button>
+                  @click="release"
+                  :disabled="content.length===0">发布</van-button>
     </div>
   </div>
 </template>
 
 <script>
-import { reqGetCommentsInfo, reqLikeArticle, reqDisLikeArticle } from '@/api'
+import { reqGetCommentsInfo, reqLikeArticle, reqDisLikeArticle, reqComment } from '@/api'
 export default {
   name: 'CommentList',
   data () {
     return {
       comments: [],
-      isShow: true
+      isShow: false,
+      content: '',
+      loading: false,
+      finished: false,
+      offset: null
+    }
+  },
+  props: {
+    articleInfo: {
+      type: Object
     }
   },
   mounted () {
+    // 获取评论数据
     this.getCommentsInfo()
+  },
+  computed: {
+    totalCount () {
+      return this.comments.length
+    }
   },
   methods: {
     // 获取评论信息
     async getCommentsInfo () {
       const parameter = {
-        id: this.$route.query.art_id
+        id: this.$route.query.art_id,
+        offset: this.offset
       }
       const res = await reqGetCommentsInfo(parameter)
       this.comments = res.data.data.results
@@ -99,6 +129,38 @@ export default {
         obj.is_liking = true
         await reqLikeArticle(obj.com_id)
       }
+    },
+    // 发布文章
+    async release () {
+      const res = await reqComment(this.articleInfo.art_id, this.content)
+      this.comments.push(res.data.data)
+      this.content = ''
+      location.reload('#cmt-list')
+    },
+    // 失去焦点
+    blurFn () {
+      setTimeout(() => {
+        this.isShow = true
+      }, 100)
+    },
+    // 瀑布流数据请求
+    async fn () {
+      const parameter = {
+        id: this.$route.query.art_id,
+        offset: this.offset
+      }
+      const res = await reqGetCommentsInfo(parameter)
+      if (res.data.data.results.length === 0) {
+        this.finished = true
+      }
+      this.comments = [...this.comments, ...res.data.data.results]
+      this.offset = res.data.data.last_id
+      this.loading = false
+    },
+    // 瀑布流加载
+    loadFn () {
+      // 发请求更新数据
+      this.fn()
     }
   }
 }

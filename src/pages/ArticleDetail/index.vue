@@ -63,7 +63,7 @@
 
     <!-- 文章评论 -->
     <div>
-      <CommentList></CommentList>
+      <CommentList :articleInfo="articleInfo"></CommentList>
     </div>
   </div>
 </template>
