@@ -5,7 +5,7 @@ import router from './router'
 import 'amfe-flexible'
 import directiveObj from '@/utils/directive'
 // 引入vant组件
-import { NavBar, Form, Field, Button, PullRefresh, Tabbar, TabbarItem, Icon, Tab, Tabs, Cell, Badge, List, ActionSheet, Popup, Col, Row, Search, Divider } from 'vant'
+import { NavBar, Form, Field, Button, Tag, PullRefresh, CellGroup, Tabbar, TabbarItem, Icon, Tab, Tabs, Cell, Badge, List, ActionSheet, Popup, Col, Row, Search, Divider } from 'vant'
 Vue.use(directiveObj)
 Vue.config.productionTip = false
 Vue.use(NavBar)
@@ -27,6 +27,9 @@ Vue.use(Row)
 Vue.use(Badge)
 Vue.use(Search)
 Vue.use(Divider)
+Vue.use(Tag)
+Vue.use(CellGroup)
+
 new Vue({
   router,
   render: h => h(App)

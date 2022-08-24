@@ -48,3 +48,5 @@ export const reqLikeArticle = (id) => requests({ url: '/v1_0/comment/likings', m
 export const reqDisLikeArticle = (target) => requests({ url: `/v1_0/comment/likings/${target}`, method: 'delete' })
 // 对文章或者评论进行评论
 export const reqComment = (target, content) => requests({ url: '/v1_0/comments', method: 'post', data: { target, content } })
+// 获取个人信息
+export const reqGetUserInfo = () => requests({ url: '/v1_0/user', method: 'get' })

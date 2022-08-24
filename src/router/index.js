@@ -41,6 +41,10 @@ const routes = [
   {
     path: '/article-detail',
     component: () => import('@/pages/ArticleDetail')
+  },
+  {
+    path: '/info-edit',
+    component: () => import('@/pages/User/InfoEdit.vue')
   }
 ]
 
