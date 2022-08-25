@@ -50,3 +50,5 @@ export const reqDisLikeArticle = (target) => requests({ url: `/v1_0/comment/liki
 export const reqComment = (target, content) => requests({ url: '/v1_0/comments', method: 'post', data: { target, content } })
 // 获取个人信息
 export const reqGetUserInfo = () => requests({ url: '/v1_0/user', method: 'get' })
+// 获取用户的个人资料
+export const reqGetPersonalInfo = () => requests({ url: '/v1_0/user/profile', method: 'get' })
