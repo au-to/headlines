@@ -43,6 +43,7 @@
                 title="编辑资料"
                 is-link />
       <van-cell icon="chat-o"
+      @click="$router.push('/chat')"
                 title="小思同学"
                 is-link />
       <van-cell icon="warning-o"

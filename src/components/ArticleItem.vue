@@ -11,7 +11,7 @@
             <!-- 标题右边的单图 -->
             <img class="rightImg"
                  v-if="obj.cover.type===1"
-                 :src=obj.cover.images[0]
+                 v-lazy=obj.cover.images[0]
                  alt=""
                  style="width:3.0133rem;height:1.8667rem">
           </div>
@@ -19,7 +19,7 @@
           <div class="threeImg">
             <img v-for="(imgUrl,index) in obj.cover.images"
                  :key="index"
-                 :src=imgUrl
+                 v-lazy=imgUrl
                  alt=""
                  style="width:3.0133rem;height:1.8667rem">
           </div>

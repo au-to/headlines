@@ -6,6 +6,15 @@
                  left-arrow
                  @click-left="$router.back()" />
 
+    <van-loading type="spinner"
+                 v-if="articleInfo.title"
+                 size="24px"
+                 color="#1989fa"
+                 text-color="#0094ff"
+                 vertical>
+      加载中...
+    </van-loading>
+
     <!-- 文章信息区域 -->
     <div class="article-container">
       <!-- 文章标题 -->

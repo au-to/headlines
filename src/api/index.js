@@ -52,3 +52,9 @@ export const reqComment = (target, content) => requests({ url: '/v1_0/comments',
 export const reqGetUserInfo = () => requests({ url: '/v1_0/user', method: 'get' })
 // 获取用户的个人资料
 export const reqGetPersonalInfo = () => requests({ url: '/v1_0/user/profile', method: 'get' })
+// 更新用户头像
+export const reqUpdateImage = (photo) => requests({ url: '/v1_0/user/photo', data: { photo }, method: 'PATCH' })
+// 编辑用户资料
+export const reqEditInfo = ({ name, birthday }) => requests({ url: '/v1_0/user/profile', method: 'PATCH', data: { name, birthday } })
+// 刷新token
+export const reqFreshToken = () => requests({ url: '/v1_0/authorizations', method: 'put' })

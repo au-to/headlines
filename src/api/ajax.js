@@ -1,7 +1,7 @@
 // 二次封装axios
 import axios from 'axios'
-import router from '@/router'
-import { getToken } from '@/utils/token'
+import { getToken, setToken } from '@/utils/token'
+import { reqFreshToken } from './index'
 
 // 创建一个axios实例
 const requests = axios.create({
@@ -23,10 +23,12 @@ requests.interceptors.request.use((config) => {
 // 响应拦截器
 requests.interceptors.response.use((response) => {
   return response
-}, (err) => {
+}, async (err) => {
   if (err.response.status === '401') {
-    // 身份过期,重新登录
-    router.push('/login')
+    // 身份过期,刷新token
+    const res = await reqFreshToken()
+    const token = res.data.data.token
+    setToken(token)
   }
   return Promise.reject(new Error(err.message))
 })

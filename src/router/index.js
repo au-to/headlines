@@ -5,6 +5,7 @@ import Home from '@/pages/Home'
 import User from '@/pages/User'
 import Login from '@/pages/Login'
 import Layout from '@/pages/Layout'
+import { getToken } from '@/utils/token'
 Vue.use(VueRouter)
 
 const routes = [
@@ -45,11 +46,33 @@ const routes = [
   {
     path: '/info-edit',
     component: () => import('@/pages/User/InfoEdit.vue')
+  },
+  {
+    path: '/chat',
+    component: () => import('@/pages/Chat')
   }
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  scrollBehavior (to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  }
+})
+
+// 全局前置守卫
+router.beforeEach((from, to, next) => {
+  if (getToken() !== null) {
+    // 登录中
+    if (next.path === '/login') {
+      next(false)
+    } else {
+      next()
+    }
+  } else {
+    // 未登录
+    next()
+  }
 })
 
 export default router
